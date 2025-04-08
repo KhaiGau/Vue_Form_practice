@@ -69,7 +69,10 @@ const handleSubmit = () => {
   <div class="container mt-5">
     <div v-if="!showResult" class="card">
       <div class="card-body">
-        <h2 class="card-title mb-4">User Registration Form</h2>
+        <div class="card-title">
+          <mb-4>User Registration Form</mb-4>
+        </div>
+
 
         <form @submit.prevent="handleSubmit" class="needs-validation">
           <!-- Name Input -->
@@ -215,4 +218,11 @@ const handleSubmit = () => {
   max-width: 600px;
   margin: 0 auto;
 }
+.card-title mb-4 {
+  color: red;
+  background-color: blue;
+  border: 5px solid yellow;
+  padding: 5px;
+}
+
 </style>
