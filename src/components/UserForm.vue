@@ -11,27 +11,10 @@ const formData = ref({
 });
 
 const showResult = ref(false);
-
-const nameError = computed(() => {
-  if (!formData.value.name) return '';
-  return formData.value.name.length < 3
-    ? 'Name must be at least 3 characters'
-    : '';
-});
-
-const emailError = computed(() => {
-  if (!formData.value.email) return '';
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return !emailRegex.test(formData.value.email)
-    ? 'Please enter a valid email'
-    : '';
-});
-
 const isFormValid = computed(() => {
   return (
     formData.value.name.length >= 3 &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.value.email) &&
-    formData.value.gender &&
     formData.value.agreePolicy
   );
 });
@@ -59,6 +42,11 @@ const resetForm = () => {
 };
 
 const handleSubmit = () => {
+  if (formData.value.name.length <= 3) {
+    alert("Please enter your name correctly");
+  }else if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.value.email)) ) {
+    alert("Please enter your email correctly");
+  }else
   if (isFormValid.value) {
     showResult.value = true;
   }
@@ -78,14 +66,10 @@ const handleSubmit = () => {
             <input
               type="text"
               class="form-control"
-              :class="{ 'is-invalid': nameError }"
               id="name"
               v-model="formData.name"
               required
             />
-            <div class="invalid-feedback" v-if="nameError">
-              {{ nameError }}
-            </div>
           </div>
 
           <!-- Email Input -->
@@ -94,19 +78,15 @@ const handleSubmit = () => {
             <input
               type="email"
               class="form-control"
-              :class="{ 'is-invalid': emailError }"
               id="email"
               v-model="formData.email"
               required
             />
-            <div class="invalid-feedback" v-if="emailError">
-              {{ emailError }}
-            </div>
           </div>
 
           <!-- Gender Radio -->
           <div class="mb-3">
-            <label class="form-label">Gender *</label>
+            <label class="form-label">Gender</label>
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -114,7 +94,6 @@ const handleSubmit = () => {
                 id="male"
                 value="male"
                 v-model="formData.gender"
-                required
               />
               <label class="form-check-label" for="male">Male</label>
             </div>
@@ -174,7 +153,7 @@ const handleSubmit = () => {
             <button
               type="submit"
               class="btn btn-primary"
-              :disabled="!isFormValid"
+              :disabled="!formData.agreePolicy"
             >
               Submit
             </button>
