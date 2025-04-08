@@ -11,14 +11,18 @@ const formData = ref({
 });
 
 const showResult = ref(false);
-
-const nameError = computed(() => {
-  if (!formData.value.name) return '';
-  return formData.value.name.length < 3
-    ? 'Name must be at least 3 characters'
-    : '';
-});
-
+const nameTouched = ref(false);
+// const nameError = computed(() => {
+//   if (nameTouched.value===false) {return '';}
+//   else { if (!formData.value.name) return '';
+//   else
+//     return formData.value.name.length < 3
+//     ? 'Name must be at least 3 characters'
+//     : '';
+//
+//   }
+// });
+const nameError = ref('');
 const emailError = computed(() => {
   if (!formData.value.email) return '';
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,8 +60,14 @@ const resetForm = () => {
     note: '',
     agreePolicy: false,
   };
+  nameTouched.value = false;
 };
-
+const bluredName = () => {
+  const name = formData.value.name;
+  if (!name) {nameError.value = 'Name is required';}
+  else if (name.length <=3) {nameError.value = 'Name is too short';}
+  else nameError.value = '';
+}
 const handleSubmit = () => {
   if (isFormValid.value) {
     showResult.value = true;
@@ -69,8 +79,8 @@ const handleSubmit = () => {
   <div class="container mt-5">
     <div v-if="!showResult" class="card">
       <div class="card-body">
-        <div class="card-title">
-          <mb-4>User Registration Form</mb-4>
+        <div class="card-title mb-4">
+          <h2>User Registration Form</h2>
         </div>
 
 
@@ -84,6 +94,8 @@ const handleSubmit = () => {
               :class="{ 'is-invalid': nameError }"
               id="name"
               v-model="formData.name"
+              @focus="nameError=''"
+              @blur="bluredName"
               required
             />
             <div class="invalid-feedback" v-if="nameError">
@@ -177,7 +189,7 @@ const handleSubmit = () => {
             <button
               type="submit"
               class="btn btn-primary"
-              :disabled="!isFormValid"
+              :disabled="!formData.agreePolicy"
             >
               Submit
             </button>
@@ -218,7 +230,7 @@ const handleSubmit = () => {
   max-width: 600px;
   margin: 0 auto;
 }
-.card-title mb-4 {
+.card-title{
   color: red;
   background-color: blue;
   border: 5px solid yellow;
